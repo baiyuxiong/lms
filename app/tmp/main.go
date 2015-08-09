@@ -99,6 +99,18 @@ func main() {
 			
 		})
 	
+	revel.RegisterController((*controllers.Upload)(nil),
+		[]*revel.MethodType{
+			&revel.MethodType{
+				Name: "DoUploadFile",
+				Args: []*revel.MethodArg{ 
+				},
+				RenderArgNames: map[int][]string{ 
+				},
+			},
+			
+		})
+	
 	revel.RegisterController((*controllers.Admin)(nil),
 		[]*revel.MethodType{
 			&revel.MethodType{
@@ -337,17 +349,41 @@ func main() {
 				Args: []*revel.MethodArg{ 
 				},
 				RenderArgNames: map[int][]string{ 
-					113: []string{ 
+					140: []string{ 
+						"transfers",
+						"leaves",
+						"userProfiles",
+						"leaveType",
+					},
+				},
+			},
+			&revel.MethodType{
+				Name: "ViewCheckDetail",
+				Args: []*revel.MethodArg{ 
+					&revel.MethodArg{Name: "id", Type: reflect.TypeOf((*int)(nil)) },
+				},
+				RenderArgNames: map[int][]string{ 
+					182: []string{ 
+						"leave",
+						"transfers",
+						"transferUsers",
+						"userProfile",
+						"userLevel",
+						"userGender",
+						"dept",
+						"employmentType",
+						"leaveType",
+						"leaveTransfer",
 					},
 				},
 			},
 			&revel.MethodType{
 				Name: "DoCheckLeave",
 				Args: []*revel.MethodArg{ 
+					&revel.MethodArg{Name: "id", Type: reflect.TypeOf((*int)(nil)) },
+					&revel.MethodArg{Name: "action", Type: reflect.TypeOf((*string)(nil)) },
 				},
 				RenderArgNames: map[int][]string{ 
-					117: []string{ 
-					},
 				},
 			},
 			&revel.MethodType{
@@ -355,7 +391,7 @@ func main() {
 				Args: []*revel.MethodArg{ 
 				},
 				RenderArgNames: map[int][]string{ 
-					133: []string{ 
+					255: []string{ 
 						"user",
 						"userProfiles",
 						"dept",
@@ -400,18 +436,6 @@ func main() {
 				Args: []*revel.MethodArg{ 
 					&revel.MethodArg{Name: "username", Type: reflect.TypeOf((*string)(nil)) },
 					&revel.MethodArg{Name: "password", Type: reflect.TypeOf((*string)(nil)) },
-				},
-				RenderArgNames: map[int][]string{ 
-				},
-			},
-			
-		})
-	
-	revel.RegisterController((*controllers.Upload)(nil),
-		[]*revel.MethodType{
-			&revel.MethodType{
-				Name: "DoUploadFile",
-				Args: []*revel.MethodArg{ 
 				},
 				RenderArgNames: map[int][]string{ 
 				},

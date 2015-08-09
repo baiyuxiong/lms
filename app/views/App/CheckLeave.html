@@ -28,35 +28,33 @@
                             <table class="table bootstrap-admin-table-with-actions">
                                 <thead>
                                 <tr>
-                                    <th>#ID</th>
-                                    <th>名称</th>
-                                    <th>上级部门</th>
-                                    <th>介绍</th>
-                                    <th>审批负责人</th>
+                                    <th>请假人</th>
+                                    <th>请假类型</th>
+                                    <th>天数</th>
+                                    <th>我的审批</th>
+                                    <th>请假状态</th>
                                     <th>操作</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                {{range .depts}}
+                                {{range $k,$v := .transfers}}
                                 <tr>
-                                    <td>{{.Id}}</td>
-                                    <td>{{raw (addSpaces .Depth 3)}}{{.Name}}</td>
-                                    <td>{{index $.nameMap .ParentId}}</td>
-                                    <td>{{.Info}}</td>
-                                    <td>{{(index $.leaders .LeaderId).Name}}</td>
+                                    <td>{{(index $.userProfiles ((index $.leaves $v.LeaveId).UserId)).Name}}</td>
+                                    <td>{{range $key,$val := $.leaveType}}
+                                        {{if myeq $key (index $.leaves $v.LeaveId).LeaveType}} {{$val}} {{end}}
+                                        {{end}}</td>
+                                    <td>{{(index $.leaves $v.LeaveId).Duration}}天</td>
+                                    <td>{{checkStatus .IsAgree}}</td>
+                                    <td>{{leaveStatus (index $.leaves $v.LeaveId).Status}}</td>
                                     <td class="actions">
-                                        <a href="/admin/editDepartment?id={{.Id}}">
+                                        {{if eq $v.IsAgree 0}}
+                                        <a href="/app/ViewCheckDetail?id={{$v.LeaveId}}">
                                             <button class="btn btn-sm btn-primary">
                                                 <i class="glyphicon glyphicon-pencil"></i>
-                                                Edit
+                                                审批
                                             </button>
                                         </a>
-                                        <a href="/admin/delDepartment?id={{.Id}}">
-                                            <button class="btn btn-sm btn-danger">
-                                                <i class="glyphicon glyphicon-trash"></i>
-                                                Delete
-                                            </button>
-                                        </a>
+                                        {{end}}
                                     </td>
                                 </tr>
                                 {{end}}

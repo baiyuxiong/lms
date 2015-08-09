@@ -84,7 +84,7 @@ func (c App) DoAddLeave(reason string, leave_type int, startdate, enddate time.T
 
 	leave.FlowId = c.getLeaveFlowId(c.UserProfile, leave)
 	leave.StepId = "0" //第0步，
-	err :=c.getLeaveInchargeProfile(c.UserProfile,leave)
+	err :=c.getLeaveInchargeProfile(c.UserProfile,leave,true)
 
 	if err != nil{
 		c.Flash.Error(err.Error())
@@ -109,12 +109,134 @@ func (c App) DoAddLeave(reason string, leave_type int, startdate, enddate time.T
 }
 
 func (c App) CheckLeave() revel.Result {
-	
-	return c.Render()
+
+	transfers := make([]models.LeaveTransfer,0)
+	app.Engine.Where("assign_to=?",c.User.Id).OrderBy("created_at desc").Find(&transfers)
+
+	//获取每个参与审批人的信息
+	leaves := make(map[int]models.Leave)
+	userProfiles := make(map[int]models.UserProfiles)
+	for _, transfer := range transfers {
+		_, exists := leaves[transfer.LeaveId]
+		if !exists {
+			leave := new(models.Leave)
+			has, _ := app.Engine.Id(transfer.LeaveId).Get(leave)
+			if has {
+				leaves[transfer.LeaveId] =*leave
+
+				_, exists = userProfiles[leave.UserId]
+				if !exists {
+					up := new(models.UserProfiles)
+					has, _ := app.Engine.Id(leave.UserId).Get(up)
+					if has {
+						userProfiles[leave.UserId] =*up
+					}
+				}
+			}
+		}
+	}
+	leaveType := utils.LeaveType
+
+	return c.Render(transfers,leaves,userProfiles,leaveType)
 }
 
-func (c App) DoCheckLeave() revel.Result {
-	return c.Render()
+func (c App) ViewCheckDetail(id int)revel.Result{
+	//检查权限
+	leaveTransfer := new(models.LeaveTransfer)
+	has,_ := app.Engine.Where("leave_id=? and assign_to=?",id,c.User.Id).Get(leaveTransfer)
+	if !has{
+		return c.Redirect("/")
+	}
+
+	leave := new(models.Leave)
+	app.Engine.Id(id).Get(leave)
+
+	//获取请假人信息
+	userProfile := new(models.UserProfiles)
+	app.Engine.Id(leave.UserId).Get(userProfile)
+
+	dept := new(models.Department)
+	app.Engine.Id(c.UserProfile.DepartmentId).Get(dept)
+
+	transfers := make([]models.LeaveTransfer,0)
+	app.Engine.Where("leave_id=?",id).OrderBy("created_at asc").Find(&transfers)
+
+	//获取每个参与审批人的信息
+	transferUsers := make(map[int]models.UserProfiles)
+	for _, transfer := range transfers {
+		_, exists := transferUsers[transfer.AssignTo]
+		if !exists {
+			userProfile := new(models.UserProfiles)
+			has, _ := app.Engine.Id(transfer.AssignTo).Get(userProfile)
+			if has {
+				transferUsers[transfer.AssignTo] =*userProfile
+			}
+		}
+	}
+
+	userLevel := utils.UserLevel
+	userGender := utils.UserGender
+	leaveType := utils.LeaveType
+	employmentType:=utils.EmploymentType
+
+	return c.Render(leave,transfers,transferUsers,userProfile,userLevel,userGender,dept,employmentType,leaveType,leaveTransfer)
+}
+
+func (c App) DoCheckLeave(id int,action string) revel.Result {
+	//检查权限
+	leaveTransfer := new(models.LeaveTransfer)
+	has,_ := app.Engine.Where("leave_id=? and assign_to=?",id,c.User.Id).Get(leaveTransfer)
+	if !has{
+		return c.Redirect("/")
+	}
+
+	leave := new(models.Leave)
+	app.Engine.Id(id).Get(leave)
+
+	//获取请假人信息
+	userProfile := new(models.UserProfiles)
+	app.Engine.Id(leave.UserId).Get(userProfile)
+
+
+	if action == "agree"{
+		err := c.getLeaveInchargeProfile(userProfile,leave,true)
+		if err != nil{
+			c.Flash.Error(err.Error())
+			c.FlashParams()
+		}
+
+		if leaveTransfer.IsAgree == utils.LEAVE_CHECKING {
+			leaveTransfer.IsAgree = utils.LEAVE_CHECK_OK
+			app.Engine.Cols("is_agree").Update(leaveTransfer)
+		}
+
+		app.Engine.Cols("in_charge_user_id").Cols("status").Cols("updated_at").Update(leave)
+
+		transfer := new(models.LeaveTransfer)
+		transfer.LeaveId = leave.Id
+		transfer.AssignFr = leave.UserId
+		transfer.AssignTo = leave.InChargeUserId
+		transfer.IsAgree = 0
+		transfer.CreatedAt = time.Now()
+		transfer.UpdatedAt = transfer.CreatedAt
+
+		app.Engine.Insert(transfer)
+	}else{
+		err := c.getLeaveInchargeProfile(userProfile,leave,false)
+		if err != nil{
+			c.Flash.Error(err.Error())
+			c.FlashParams()
+		}
+
+		if leaveTransfer.IsAgree == utils.LEAVE_CHECKING {
+			leaveTransfer.IsAgree = utils.LEAVE_CHECK_FAIL
+			app.Engine.Cols("is_agree").Update(leaveTransfer)
+		}
+
+		app.Engine.Cols("in_charge_user_id").Cols("status").Cols("updated_at").Update(leave)
+	}
+
+	return c.Redirect("viewCheckDetail?id="+fmt.Sprintf("%d",id))
 }
 
 func (c App) EditProfile() revel.Result {
@@ -182,7 +304,7 @@ func (c App)getLeaveFlowId(up *models.UserProfiles, leave *models.Leave) string 
 /**
 根据假条，获取下一审批人ID，第一个参数为发起人信息
  */
-func (c App)getLeaveInchargeProfile(up *models.UserProfiles,leave *models.Leave) error{
+func (c App)getLeaveInchargeProfile(up *models.UserProfiles,leave *models.Leave,isAgree bool) error{
 	currentStepId,err := strconv.Atoi(leave.StepId)
 	if err != nil{
 		return err
@@ -209,11 +331,25 @@ func (c App)getLeaveInchargeProfile(up *models.UserProfiles,leave *models.Leave)
 	//当前一步，维护状态用
 	currentStep,exists := steps.Steps[fmt.Sprintf("%d",currentStepId)]
 
-	if currentStepId!=0 && !exists{
-		leave.Status = utils.LEAVE_STATUS_CANCEL_OK //销假成功，结束了
-	}else if nextStep.Type=="2" && currentStep.Type=="1"{
-		leave.Status = utils.LEAVE_STATUS_ASK_OK //请假成功，该消假了
+	if isAgree{
+		if currentStepId!=0 && !exists{
+			leave.Status = utils.LEAVE_STATUS_CANCEL_OK //销假成功，结束了
+		}else if nextStep.Type=="2" && currentStep.Type=="1"{
+			leave.Status = utils.LEAVE_STATUS_ASK_OK //请假成功，该消假了
+		}else if nextStep.Type=="1"{
+			leave.Status = utils.LEAVE_STATUS_ASKING //请假中
+		}else if currentStep.Type=="2"{
+			leave.Status = utils.LEAVE_STATUS_CANCELING //销假中
+		}
+	}else{
+		if leave.Status != utils.LEAVE_STATUS_CANCEL_FAIL{
+			leave.Status = utils.LEAVE_STATUS_ASK_FAIL
+		}else {
+			leave.Status = utils.LEAVE_STATUS_CANCEL_FAIL
+		}
 	}
+	leave.UpdatedAt = time.Now()
+
 	return nil
 }
 

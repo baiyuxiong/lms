@@ -1,0 +1,154 @@
+{{template "header.html" .}}
+
+{{template "Nav.html" .}}
+
+<div class="container">
+    <!-- left, vertical navbar & content -->
+    <div class="row">
+        <!-- left, vertical navbar -->
+        {{template "App/Menu.html" .}}
+
+        <!-- content -->
+        <div class="col-md-10">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="page-header">
+                        <h1>审批假条</h1>
+                    </div>
+                </div>
+            </div>
+            {{if .flash.error}}
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="alert alert-info">
+                    <a class="close" data-dismiss="alert" href="#">&times;</a>
+                    {{.flash.error}}
+                     </div>
+                </div>
+            </div>
+            {{end}}
+            {{if eq .leaveTransfer.IsAgree 0}}
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="page-header">
+                        <a href="/app/doCheckLeave?id={{.leave.Id}}&action=agree">
+                            <button class="btn btn-sm btn-primary">
+                                <i class="glyphicon glyphicon-ok"></i>
+                                同意
+                            </button>
+                        </a>
+                        <a href="/app/doCheckLeave?id={{.leave.Id}}&action=unAgree">
+                            <button class="btn btn-sm btn-warning">
+                                <i class="glyphicon glyphicon-remove"></i>
+                                不同意
+                            </button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {{end}}
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <div class="text-muted bootstrap-admin-box-title">请假人信息</div>
+                        </div>
+                        <div class="bootstrap-admin-panel-content">
+                            <div class="row">
+                                <div class="col-md-3">姓名:{{.userProfile.Name}}</div>
+                                <div class="col-md-3">性别:{{range $key,$val := .userGender}}
+                                    {{if myeq $key $.userProfile.Gender}} {{$val}} {{end}}
+                                    {{end}}</div>
+                                <div class="col-md-3">
+                                    部门：{{.dept.Name}}
+                                </div>
+                                <div class="col-md-3">
+                                    用户工性质：{{range $key,$val := .employmentType}}
+                                    {{if myeq $key $.userProfile.EmploymentType}} {{$val}} {{end}}
+                                    {{end}}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3">电话:{{.userProfile.Phone}}</div>
+                                <div class="col-md-3">手机:{{.userProfile.Phone1}}</div>
+                                <div class="col-md-3">岗位：{{.userProfile.Position}}</div>
+                                <div class="col-md-3">入职时间：{{formatDate .userProfile.JoinDate "2006年1月2日"}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <div class="text-muted bootstrap-admin-box-title">请假信息</div>
+                        </div>
+                        <div class="bootstrap-admin-panel-content">
+                            <div class="row">
+                                <div class="col-md-8">事由:{{.leave.Reason}}</div>
+                                <div class="col-md-4">请假类型:{{range $key,$val := .leaveType}}
+                                    {{if myeq $key $.leave.LeaveType}} {{$val}} {{end}}
+                                    {{end}}</div>
+                            </div>
+                            {{if eq $.leave.LeaveType 7}}
+                            <div class="row">
+                                <div class="col-md-6">探亲地址:{{.leave.Address}}</div>
+                                <div class="col-md-6">路程假天数:{{.leave.OnwayDate}}</div>
+                            </div>
+                            {{end}}
+                            <div class="row">
+                                <div class="col-md-4">开始时间:{{formatDate .leave.Startdate "2006年1月2日"}}</div>
+                                <div class="col-md-4">结束时间:{{formatDate .leave.Enddate "2006年1月2日"}}</div>
+                                <div class="col-md-4">天数:{{.leave.Duration}}天</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">状态:{{leaveStatus .leave.Status}}</div>
+                            </div>
+                            {{if ne $.leave.Filepath ""}}
+                            <div class="row">
+                                <div class="col-md-12">附件:{{.leave.Filepath}}</div>
+                            </div>
+                            {{end}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <div class="text-muted bootstrap-admin-box-title">审批信息</div>
+                        </div>
+                        <div class="bootstrap-admin-panel-content">
+                            <table class="table bootstrap-admin-table-with-actions">
+                                <thead>
+                                <tr>
+                                    <th>审批人</th>
+                                    <th>审批状态</th>
+                                    <th>收到审批时间</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {{range .transfers}}
+                                <tr>
+                                    <td>{{(index $.transferUsers .AssignTo).Name}}</td>
+                                    <td>{{checkStatus .IsAgree}}</td>
+                                    <td>{{formatDate .CreatedAt "2006年1月2日 15时04时05秒"}}</td>
+                                </tr>
+                                {{end}}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{template "footer.html" .}}

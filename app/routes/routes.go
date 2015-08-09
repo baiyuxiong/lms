@@ -75,6 +75,18 @@ func (_ tStatic) ServeModule(
 }
 
 
+type tUpload struct {}
+var Upload tUpload
+
+
+func (_ tUpload) DoUploadFile(
+		) string {
+	args := make(map[string]string)
+	
+	return revel.MainRouter.Reverse("Upload.DoUploadFile", args).Url
+}
+
+
 type tAdmin struct {}
 var Admin tAdmin
 
@@ -317,10 +329,23 @@ func (_ tApp) CheckLeave(
 	return revel.MainRouter.Reverse("App.CheckLeave", args).Url
 }
 
-func (_ tApp) DoCheckLeave(
+func (_ tApp) ViewCheckDetail(
+		id int,
 		) string {
 	args := make(map[string]string)
 	
+	revel.Unbind(args, "id", id)
+	return revel.MainRouter.Reverse("App.ViewCheckDetail", args).Url
+}
+
+func (_ tApp) DoCheckLeave(
+		id int,
+		action string,
+		) string {
+	args := make(map[string]string)
+	
+	revel.Unbind(args, "id", id)
+	revel.Unbind(args, "action", action)
 	return revel.MainRouter.Reverse("App.DoCheckLeave", args).Url
 }
 
@@ -374,18 +399,6 @@ func (_ tAuth) DoLogin(
 	revel.Unbind(args, "username", username)
 	revel.Unbind(args, "password", password)
 	return revel.MainRouter.Reverse("Auth.DoLogin", args).Url
-}
-
-
-type tUpload struct {}
-var Upload tUpload
-
-
-func (_ tUpload) DoUploadFile(
-		) string {
-	args := make(map[string]string)
-	
-	return revel.MainRouter.Reverse("Upload.DoUploadFile", args).Url
 }
 
 

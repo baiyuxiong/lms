@@ -7,6 +7,7 @@ module:testrunner
 GET     /                                       App.ListLeave
 GET     /app/viewLeave                          App.ViewLeave
 GET     /app/checkLeave                         App.CheckLeave
+GET     /app/viewCheckDetail                    App.ViewCheckDetail
 GET     /app/doCheckLeave                        App.DoCheckLeave
 GET     /app/addLeave                         App.AddLeave
 GET     /app/doAddLeave                         App.DoAddLeave
