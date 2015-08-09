@@ -1,0 +1,255 @@
+{
+  "1":{
+    "name": "普通员工一天之内",
+    "steps": {
+      "1": {
+        "charge": "starterDept",
+        "type": "1"
+      },
+      "2": {
+        "charge": "starter",
+        "type": "2"
+      },
+      "3": {
+        "charge": "starterDept",
+        "type": "2"
+      }
+    }
+  },
+  "2":{
+    "name": "普通员工一至三天",
+    "steps": {
+      "1": {
+        "charge": "starterDept",
+        "type": "1"
+      },
+      "2": {
+        "charge": "deptById:1",
+        "type": "1"
+      },
+      "3": {
+        "charge": "deptParentByStep:1",
+        "type": "1"
+      },
+      "4": {
+        "charge": "starter",
+        "type": "2"
+      },
+      "5": {
+        "charge": "starterDept",
+        "type": "2"
+      },
+      "6": {
+        "charge": "deptById:1",
+        "type": "2"
+      }
+    }
+  },
+  "3":{
+    "name": "普通员工三天以上",
+    "steps": {
+      "1": {
+        "charge": "starterDept",
+        "type": "1"
+      },
+      "2": {
+        "charge": "deptById:1",
+        "type": "1"
+      },
+      "3": {
+        "charge": "deptParentByStep:1",
+        "type": "1"
+      },
+      "4": {
+        "charge": "deptParentByStep:3",
+        "type": "1"
+      },
+      "5": {
+        "charge": "starter",
+        "type": "2"
+      },
+      "6": {
+        "charge": "starterDept",
+        "type": "2"
+      },
+      "7": {
+        "charge": "deptById:1",
+        "type": "2"
+      }
+    }
+  },
+  "4":{
+    "name": "科级员工一天之内",
+    "steps": {
+      "1": {
+        "charge": "deptById:1",
+        "type": "1"
+      },
+      "2": {
+        "charge": "deptParentByStep:1",
+        "type": "1"
+      },
+      "3": {
+        "charge": "starter",
+        "type": "2"
+      },
+      "4": {
+        "charge": "deptById:1",
+        "type": "2"
+      },
+      "5": {
+        "charge": "deptParentByStep:1",
+        "type": "2"
+      }
+    }
+  },
+  "5":{
+    "name": "科级员工一天以上",
+    "steps": {
+      "1": {
+        "charge": "deptById:1",
+        "type": "1"
+      },
+      "2": {
+        "charge": "deptParentByStep:1",
+        "type": "1"
+      },
+      "3": {
+        "charge": "deptParentByStep:2",
+        "type": "1"
+      },
+      "4": {
+        "charge": "starter",
+        "type": "2"
+      },
+      "5": {
+        "charge": "deptById:1",
+        "type": "2"
+      },
+      "6": {
+        "charge": "deptParentByStep:2",
+        "type": "2"
+      }
+    }
+  },
+  "6":{
+    "name": "普通女员工一至三天",
+    "steps": {
+      "1": {
+        "charge": "starterDept",
+        "type": "1"
+      },
+      "2": {
+        "charge": "deptById:1",
+        "type": "1"
+      },
+      "3": {
+        "charge": "deptParentByStep:1",
+        "type": "1"
+      },
+      "4": {
+        "charge": "starter",
+        "type": "2"
+      },
+      "5": {
+        "charge": "starterDept",
+        "type": "2"
+      },
+      "6": {
+        "charge": "deptById:1",
+        "type": "2"
+      }
+    }
+  },
+  "7":{
+    "name": "普通女员工三天以上",
+    "steps": {
+      "1": {
+        "charge": "starterDept",
+        "type": "1"
+      },
+      "2": {
+        "charge": "deptById:1",
+        "type": "1"
+      },
+      "3": {
+        "charge": "deptParentByStep:1",
+        "type": "1"
+      },
+      "4": {
+        "charge": "deptParentByStep:3",
+        "type": "1"
+      },
+      "5": {
+        "charge": "starter",
+        "type": "2"
+      },
+      "6": {
+        "charge": "starterDept",
+        "type": "2"
+      },
+      "7": {
+        "charge": "deptById:1",
+        "type": "2"
+      }
+    }
+  },
+  "8":{
+    "name": "科级女员工一天之内",
+    "steps": {
+      "1": {
+        "charge": "deptById:1",
+        "type": "1"
+      },
+      "2": {
+        "charge": "deptParentByStep:1",
+        "type": "1"
+      },
+      "3": {
+        "charge": "starter",
+        "type": "2"
+      },
+      "4": {
+        "charge": "deptById:1",
+        "type": "2"
+      },
+      "5": {
+        "charge": "deptParentByStep:1",
+        "type": "2"
+      }
+    }
+  },
+  "9":{
+    "name": "科级女员工一天以上",
+    "steps": {
+      "1": {
+        "charge": "deptById:1",
+        "type": "1"
+      },
+      "2": {
+        "charge": "deptById:2",
+        "type": "1"
+      },
+      "3": {
+        "charge": "deptParentByStep:1",
+        "type": "1"
+      },
+      "4": {
+        "charge": "deptParentByStep:3",
+        "type": "1"
+      },
+      "5": {
+        "charge": "starter",
+        "type": "2"
+      },
+      "6": {
+        "charge": "deptById:1",
+        "type": "2"
+      },
+      "7": {
+        "charge": "deptParentByStep:2",
+        "type": "2"
+      }
+    }
+  }
+}

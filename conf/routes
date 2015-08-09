@@ -1,0 +1,47 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+module:testrunner
+
+GET     /                                       App.ListLeave
+GET     /app/viewLeave                          App.ViewLeave
+GET     /app/checkLeave                         App.CheckLeave
+GET     /app/doCheckLeave                        App.DoCheckLeave
+GET     /app/addLeave                         App.AddLeave
+GET     /app/doAddLeave                         App.DoAddLeave
+GET     /app/editProfile                        App.EditProfile
+GET     /app/doEditProfile                        App.DoEditProfile
+
+GET     /auth/login                             Auth.Login
+GET     /auth/logout                             Auth.Logout
+POST     /auth/doLogin                           Auth.DoLogin
+
+
+
+GET     /admin                                      Admin.ListUser
+GET     /admin/listUser                             Admin.ListUser
+POST     /admin/addUser                             Admin.AddUser
+POST     /admin/doAddUser                           Admin.DoAddUser
+POST     /admin/editUser                            Admin.EditUser
+POST     /admin/doEditUser                          Admin.DoEditUser
+GET     /admin/delUser                              Admin.DelUser
+
+GET     /admin/listDepartment                             Admin.ListDepartment
+POST     /admin/addDepartment                             Admin.AddDepartment
+POST     /admin/doAddDepartment                             Admin.DoAddDepartment
+POST     /admin/editDepartment                             Admin.EditDepartment
+POST     /admin/doEditDepartment                             Admin.DoEditDepartment
+GET     /admin/delDepartment                             Admin.DelDepartment
+GET     /admin/import                             Admin.Import
+GET     /admin/setDepartmentLeader                             Admin.SetDepartmentLeader
+
+
+# Ignore favicon requests
+GET     /favicon.ico                            404
+
+# Map static resources from the /app/public folder to the /public path
+GET     /public/*filepath                       Static.Serve("public")
+
+# Catch all
+*       /:controller/:action                    :controller.:action

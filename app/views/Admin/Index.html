@@ -1,0 +1,35 @@
+{{template "header.html" .}}
+
+{{template "Nav.html" .}}
+
+<div class="container">
+    <!-- left, vertical navbar & content -->
+    <div class="row">
+        <!-- left, vertical navbar -->
+        {{template "Admin/Menu.html" .}}
+
+        <!-- content -->
+        <div class="col-md-10">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="page-header">
+                        <h1>Dashboard</h1>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="alert alert-success bootstrap-admin-alert">
+                        <button type="button" class="close" data-dismiss="alert">×</button>
+                        <h4>Success</h4>
+                        The operation completed successfully
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{{template "footer.html" .}}

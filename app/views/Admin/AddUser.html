@@ -1,0 +1,159 @@
+{{append . "moreScripts" "vendors/bootstrap-datepicker/js/bootstrap-datepicker.js"}}
+{{append . "moreStyles" "vendors/bootstrap-datepicker/css/datepicker.css"}}
+{{append . "moreStyles" "css/datepicker.fixes.css"}}
+
+{{template "header.html" .}}
+
+{{template "Nav.html" .}}
+
+<div class="container">
+    <!-- left, vertical navbar & content -->
+    <div class="row">
+        <!-- left, vertical navbar -->
+        {{template "Admin/Menu.html" .}}
+
+        <!-- content -->
+        <div class="col-md-10">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="page-header">
+                        <h1>增加用户</h1>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="col-lg-12">
+                    {{if .flash.error}}
+                    <div class="alert alert-info">
+                        <a class="close" data-dismiss="alert" href="#">&times;</a>
+                        {{.flash.error}}
+                    </div>
+                    {{end}}
+                    <div class="panel panel-default bootstrap-admin-no-table-panel">
+                        <div class="panel-heading">
+                            <div class="text-muted bootstrap-admin-box-title">增加用户</div>
+                        </div>
+                        <div class="bootstrap-admin-no-table-panel-content bootstrap-admin-panel-content collapse in">
+                            <form class="form-horizontal" method="post" action="doAddUser">
+                                <fieldset>
+                                    <legend>增加用户</legend>
+                                    <div class="form-group">
+                                        <label class="col-lg-2 control-label" for="username">员工编号</label>
+                                        <div class="col-lg-10">
+                                            <input name="username" class="form-control" id="username" type="text" placeholder="用户名" value="{{.flash.username}}">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-lg-2 control-label" for="password">密码</label>
+                                        <div class="col-lg-10">
+                                            <input name="password" class="form-control" id="password" type="text" placeholder="密码" value="{{.flash.password}}">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-lg-2 control-label" for="name">姓名</label>
+                                        <div class="col-lg-10">
+                                            <input name="name" class="form-control" id="name" type="text" placeholder="姓名" value="{{.flash.name}}">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-lg-2 control-label">性别</label>
+                                        <div class="col-lg-10">
+                                            <label>
+                                                <input type="radio" name="gender" value="1"{{if myeq "1" .flash.gender}} checked{{end}}>男
+                                                <input type="radio" name="gender" value="2"{{if myeq "2" .flash.gender}} checked{{end}} >女
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-lg-2 control-label">用户级别</label>
+                                        <div class="col-lg-10">
+                                            <select name="level">
+                                                {{range $key,$val := .userLevel}}
+                                                <option value="{{$key}}"{{if myeq $key $.flash.level}} selected{{end}}>{{$val}}</option>
+                                                {{end}}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-lg-2 control-label">用工性质</label>
+                                        <div class="col-lg-10">
+                                            <select name="level">
+                                                {{range $key,$val := .employmentType}}
+                                                <option value="{{$key}}"{{if myeq $key $.flash.employment_type}} selected{{end}}>{{$val}}</option>
+                                                {{end}}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-lg-2 control-label">部门</label>
+                                        <div class="col-lg-10">
+                                            <select name="department_id">
+                                            {{range .depts}}
+                                                <option value="{{.Id}}"{{if myeq .Id $.flash.department_id}} selected{{end}}>{{.Name}}</option>
+                                            {{end}}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-lg-2 control-label">是否部门请假审批人</label>
+                                        <div class="col-lg-10">
+                                            <label>
+                                                <input type="radio" name="is_leader" value="1"{{if myeq "1" .flash.is_leader}} checked{{end}}>是
+                                                <input type="radio" name="is_leader" value="2"{{if myeq "2" .flash.is_leader}} checked{{end}} >否
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-lg-2 control-label" for="phone">固定电话</label>
+                                        <div class="col-lg-10">
+                                            <input name="phone" class="form-control" id="phone" type="text" placeholder="固定电话" value="{{.flash.phone}}">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-lg-2 control-label" for="phone1">手机</label>
+                                        <div class="col-lg-10">
+                                            <input name="phone1" class="form-control" id="phone1" type="text" placeholder="手机" value="{{.flash.phone1}}">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-lg-2 control-label" for="position">职位</label>
+                                        <div class="col-lg-10">
+                                            <input name="position" class="form-control" id="position" type="text" placeholder="职位" value="{{.flash.position}}">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-lg-2 control-label" for="email">Email</label>
+                                        <div class="col-lg-10">
+                                            <input name="email" class="form-control" id="email" type="text" placeholder="Email" value="{{.flash.email}}">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-lg-2 control-label" for="join_date">入职日期</label>
+                                        <div class="col-lg-10">
+                                            <input name="join_date" class="form-control datepicker" id="join_date" type="text" placeholder="入职日期" value="{{.flash.join_date}}">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-lg-2 control-label" for="birth_date">出生日期</label>
+                                        <div class="col-lg-10">
+                                            <input name="birth_date" class="form-control datepicker" id="birth_date" type="text" placeholder="出生日期" value="{{.flash.birth_date}}">
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">提交</button>
+                                </fieldset>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    $('.datepicker').datepicker();
+</script>
+{{template "footer.html" .}}

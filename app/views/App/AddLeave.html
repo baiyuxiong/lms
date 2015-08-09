@@ -1,0 +1,135 @@
+{{append . "moreScripts" "vendors/bootstrap-datepicker/js/bootstrap-datepicker.js"}}
+{{append . "moreStyles" "vendors/bootstrap-datepicker/css/datepicker.css"}}
+{{append . "moreStyles" "css/datepicker.fixes.css"}}
+
+{{template "header.html" .}}
+
+{{template "Nav.html" .}}
+
+<div class="container">
+    <!-- left, vertical navbar & content -->
+    <div class="row">
+        <!-- left, vertical navbar -->
+        {{template "Admin/Menu.html" .}}
+
+        <!-- content -->
+        <div class="col-md-10">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="page-header">
+                        <h1>请假</h1>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="col-lg-12">
+                    {{if .flash.error}}
+                    <div class="alert alert-info">
+                        <a class="close" data-dismiss="alert" href="#">&times;</a>
+                        {{.flash.error}}
+                    </div>
+                    {{end}}
+                    <div class="panel panel-default bootstrap-admin-no-table-panel">
+                        <div class="panel-heading">
+                            <div class="text-muted bootstrap-admin-box-title">请假</div>
+                        </div>
+                        <div class="bootstrap-admin-no-table-panel-content bootstrap-admin-panel-content collapse in">
+                            <form class="form-horizontal" method="post" action="doAddLeave">
+                                <fieldset>
+                                    <legend>添加假条</legend>
+                                    <div class="form-group">
+                                        <label class="col-lg-2 control-label" for="reason">事由</label>
+                                        <div class="col-lg-10">
+                                            <input name="reason" class="form-control" id="reason" type="text" placeholder="事由" value="{{.flash.reason}}">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-lg-2 control-label">请假类型</label>
+                                        <div class="col-lg-10">
+                                            <select name="leave_type" id="leave_type">
+                                                {{range $key,$val := .leaveType}}
+                                                <option value="{{$key}}"{{if myeq $key $.flash.leaveType}} selected{{end}}>{{$val}}</option>
+                                                {{end}}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-lg-2 control-label" for="startdate">请假开始日期</label>
+                                        <div class="col-lg-10">
+                                            <input name="startdate" class="form-control datepicker" id="startdate" type="text" placeholder="请假开始日期" value="{{.flash.startdate}}">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-lg-2 control-label" for="enddate">请假结束日期</label>
+                                        <div class="col-lg-10">
+                                            <input name="enddate" class="form-control datepicker" id="enddate" type="text" placeholder="请假结束日期" value="{{.flash.enddate}}">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-lg-2 control-label" for="enddate">请假时长</label>
+                                        <div class="col-lg-10">
+                                            <span id="duration">请选择日期</span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group home_leave" style="display:none">
+                                        <label class="col-lg-2 control-label" for="address">探亲地址</label>
+                                        <div class="col-lg-10">
+                                            <input name="address" class="form-control" id="address" type="text" placeholder="探亲地址" value="{{.flash.address}}">
+                                        </div>
+                                    </div>
+                                    <div class="form-group home_leave" style="display:none">
+                                        <label class="col-lg-2 control-label" for="onway_date">路程假天数</label>
+                                        <div class="col-lg-10">
+                                            <input name="onway_date" class="form-control" id="onway_date" type="text" placeholder="请假结束日期" value="{{.flash.onway_date}}">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-lg-2 control-label" for="file">上传附件</label>
+                                        <div class="col-lg-10">
+                                            <input name="file" class="form-control" id="file" type="file" placeholder="请上传证明文件" value="{{.flash.email}}">
+                                        </div>
+                                    </div>
+
+                                    <button type="submit" class="btn btn-primary">提交</button>
+                                </fieldset>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $('#leave_type').change(function(){
+        obj = $(this);
+        if(obj.val() == 7){
+            $('.home_leave').show();
+        }else{
+            $('.home_leave').hide();
+        }
+    });
+
+    $('.datepicker').datepicker({
+        autoclose: true,
+        todayHighlight: true,
+		weekStart: 1
+    })
+    .on('changeDate',function(ev){
+        $(this).datepicker('hide');
+        var startDate = $('#startdate').val();
+        var endDate = $('#enddate').val();
+        start = new Date(startDate);
+        end = new Date(endDate);
+
+        sub = (end.getTime() - start.getTime()) / 86400000;
+
+        if(sub){
+            $('#duration').text(sub+"天");
+        }
+    });
+</script>
+{{template "footer.html" .}}

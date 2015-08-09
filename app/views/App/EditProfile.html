@@ -1,0 +1,130 @@
+{{append . "moreScripts" "vendors/bootstrap-datepicker/js/bootstrap-datepicker.js"}}
+{{append . "moreStyles" "vendors/bootstrap-datepicker/css/datepicker.css"}}
+{{append . "moreStyles" "css/datepicker.fixes.css"}}
+
+{{template "header.html" .}}
+
+{{template "Nav.html" .}}
+
+<div class="container">
+    <!-- left, vertical navbar & content -->
+    <div class="row">
+        <!-- left, vertical navbar -->
+        {{template "App/Menu.html" .}}
+
+        <!-- content -->
+        <div class="col-md-10">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="page-header">
+                        <h1>编辑用户</h1>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="col-lg-12">
+                    {{if .flash.error}}
+                    <div class="alert alert-info">
+                        <a class="close" data-dismiss="alert" href="#">&times;</a>
+                        {{.flash.error}}
+                    </div>
+                    {{end}}
+                    <div class="panel panel-default bootstrap-admin-no-table-panel">
+                        <div class="panel-heading">
+                            <div class="text-muted bootstrap-admin-box-title">编辑用户</div>
+                        </div>
+                        <div class="bootstrap-admin-no-table-panel-content bootstrap-admin-panel-content collapse in">
+                            <form class="form-horizontal" method="post" action="doEditProfile">
+                                <fieldset>
+                                    <legend>编辑用户</legend>
+                                    <div class="form-group">
+                                        <label class="col-lg-2 control-label" for="username">员工编号</label>
+                                        <div class="col-lg-10">
+                                            <input name="username" class="form-control" id="username" disabled type="text" placeholder="用户名" value="{{.user.Username}}">
+                                            <input name="id" class="form-control" type="hidden" value="{{.user.Id}}">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-lg-2 control-label" for="password">密码</label>
+                                        <div class="col-lg-10">
+                                            <input name="password" class="form-control" id="password" type="text" placeholder="如不修改，保持为空" value="">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-lg-2 control-label" for="name">姓名</label>
+                                        <div class="col-lg-10">
+                                            <input name="name" class="form-control" id="name" disabled type="text" placeholder="姓名" value="{{.userProfiles.Name}}">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-lg-2 control-label">性别</label>
+                                        <div class="col-lg-10">
+                                            <input class="form-control" disabled value="{{if myeq "1" .userProfiles.Gender}}男{{end}}{{if myeq "2" .userProfiles.Gender}}女{{end}}">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-lg-2 control-label">所在单位</label>
+                                        <div class="col-lg-10">
+                                            <input class="form-control" disabled value="{{.dept.Name}}">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-lg-2 control-label">用工性质</label>
+                                        <div class="col-lg-10">
+                                            <input class="form-control" disabled value="{{.employmentType}}">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-lg-2 control-label" for="phone">固定电话</label>
+                                        <div class="col-lg-10">
+                                            <input name="phone" class="form-control" id="phone" type="text" placeholder="固定电话" value="{{.userProfiles.Phone}}">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-lg-2 control-label" for="phone1">手机</label>
+                                        <div class="col-lg-10">
+                                            <input name="phone1" class="form-control" id="phone1" type="text" placeholder="手机" value="{{.userProfiles.Phone1}}">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-lg-2 control-label" for="password">Email</label>
+                                        <div class="col-lg-10">
+                                            <input name="email" class="form-control" id="email" type="text" placeholder="Email" value="{{.userProfiles.Email}}">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-lg-2 control-label" for="position">职位</label>
+                                        <div class="col-lg-10">
+                                            <input name="position" class="form-control" id="position" disabled type="text" placeholder="职位" value="{{.userProfiles.Position}}">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-lg-2 control-label" for="join_date">入职日期</label>
+                                        <div class="col-lg-10">
+                                            <input name="join_date" class="form-control datepicker" disabled id="join_date" type="text" placeholder="入职日期" value="{{date .userProfiles.JoinDate}}">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-lg-2 control-label" for="birth_date">出生日期</label>
+                                        <div class="col-lg-10">
+                                            <input name="birth_date" class="form-control datepicker" disabled id="birth_date" type="text" placeholder="出生日期" value="{{date .userProfiles.BirthDate}}">
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">提交</button>
+                                </fieldset>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    $('.datepicker').datepicker();
+</script>
+{{template "footer.html" .}}

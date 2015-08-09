@@ -1,0 +1,5 @@
+[0;32mINFO  2015/07/26 10:40:57 revel.go:329: Loaded module static
+[0m[0;32mINFO  2015/07/26 10:40:57 revel.go:329: Loaded module testrunner
+[0m[0;32mINFO  2015/07/26 10:40:57 revel.go:206: Initialized Revel v0.12.0 (2015-03-25) for >= go1.3
+[0m[0;32mINFO  2015/07/26 10:40:57 main.go:30: Running revel server
+[0m

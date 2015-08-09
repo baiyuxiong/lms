@@ -1,0 +1,88 @@
+{{template "header.html" .}}
+
+{{template "Nav.html" .}}
+
+<div class="container">
+    <!-- left, vertical navbar & content -->
+    <div class="row">
+        <!-- left, vertical navbar -->
+        {{template "Admin/Menu.html" .}}
+
+        <!-- content -->
+        <div class="col-md-10">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="page-header">
+                        <h1>部门管理</h1>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="page-header">
+                        <a href="/admin/addDepartment">
+                            <button class="btn btn-sm btn-primary">
+                                <i class="glyphicon glyphicon-pencil"></i>
+                                增加部门
+                            </button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <div class="text-muted bootstrap-admin-box-title">部门列表</div>
+                        </div>
+                        <div class="bootstrap-admin-panel-content">
+                            <table class="table bootstrap-admin-table-with-actions">
+                                <thead>
+                                <tr>
+                                    <th>#ID</th>
+                                    <th>名称</th>
+                                    <th>上级部门</th>
+                                    <th>介绍</th>
+                                    <th>审批负责人</th>
+                                    <th>操作</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {{range .depts}}
+                                    <tr>
+                                        <td>{{.Id}}</td>
+                                        <td>{{raw (addSpaces .Depth 3)}}{{.Name}}</td>
+                                        <td>{{index $.nameMap .ParentId}}</td>
+                                        <td>{{.Info}}</td>
+                                        <td>{{(index $.leaders .LeaderId).Name}}</td>
+                                        <td class="actions">
+                                            <a href="/admin/editDepartment?id={{.Id}}">
+                                                <button class="btn btn-sm btn-primary">
+                                                    <i class="glyphicon glyphicon-pencil"></i>
+                                                    Edit
+                                                </button>
+                                            </a>
+                                            <a href="/admin/delDepartment?id={{.Id}}">
+                                                <button class="btn btn-sm btn-danger">
+                                                    <i class="glyphicon glyphicon-trash"></i>
+                                                    Delete
+                                                </button>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {{end}}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{{template "footer.html" .}}
