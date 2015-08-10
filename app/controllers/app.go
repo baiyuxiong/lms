@@ -50,13 +50,16 @@ func (c App) ViewLeave(id int)revel.Result{
 		}
 	}
 
+	leaveTransfer := new(models.LeaveTransfer)
+	hasLeaveTransfer,_ := app.Engine.Where("leave_id=? and assign_to=?",id,c.User.Id).Get(leaveTransfer)
+
 	userProfile := c.UserProfile
 	userLevel := utils.UserLevel
 	userGender := utils.UserGender
 	leaveType := utils.LeaveType
 	employmentType:=utils.EmploymentType
 
-	return c.Render(leave,transfers,transferUsers,userProfile,userLevel,userGender,dept,employmentType,leaveType)
+	return c.Render(leave,transfers,transferUsers,userProfile,userLevel,userGender,dept,employmentType,leaveType,hasLeaveTransfer,leaveTransfer)
 }
 
 func (c App) AddLeave() revel.Result {
@@ -212,15 +215,16 @@ func (c App) DoCheckLeave(id int,action string) revel.Result {
 
 		app.Engine.Cols("in_charge_user_id").Cols("status").Cols("updated_at").Update(leave)
 
-		transfer := new(models.LeaveTransfer)
-		transfer.LeaveId = leave.Id
-		transfer.AssignFr = leave.UserId
-		transfer.AssignTo = leave.InChargeUserId
-		transfer.IsAgree = 0
-		transfer.CreatedAt = time.Now()
-		transfer.UpdatedAt = transfer.CreatedAt
-
-		app.Engine.Insert(transfer)
+		if leave.Status != utils.LEAVE_STATUS_CANCEL_OK && leave.InChargeUserId > 0{
+			transfer := new(models.LeaveTransfer)
+			transfer.LeaveId = leave.Id
+			transfer.AssignFr = leave.UserId
+			transfer.AssignTo = leave.InChargeUserId
+			transfer.IsAgree = 0
+			transfer.CreatedAt = time.Now()
+			transfer.UpdatedAt = transfer.CreatedAt
+			app.Engine.Insert(transfer)
+		}
 	}else{
 		err := c.getLeaveInchargeProfile(userProfile,leave,false)
 		if err != nil{
@@ -348,6 +352,7 @@ func (c App)getLeaveInchargeProfile(up *models.UserProfiles,leave *models.Leave,
 			leave.Status = utils.LEAVE_STATUS_CANCEL_FAIL
 		}
 	}
+	leave.StepId = fmt.Sprintf("%d",nextStepId)
 	leave.UpdatedAt = time.Now()
 
 	return nil

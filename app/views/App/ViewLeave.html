@@ -23,10 +23,21 @@
                     <div class="page-header">
                         <a href="/app/listLeave">
                             <button class="btn btn-sm btn-primary">
-                                <i class="glyphicon glyphicon-pencil"></i>
+                                <i class="glyphicon glyphicon-list"></i>
                                 请假列表
                             </button>
                         </a>
+
+                        {{if .hasLeaveTransfer}}
+                            {{if eq .leaveTransfer.IsAgree 0}}
+                                <a href="/app/doCheckLeave?id={{.leave.Id}}&action=agree">
+                                    <button class="btn btn-sm btn-primary">
+                                        <i class="glyphicon glyphicon-ok"></i>
+                                        销假
+                                    </button>
+                                </a>
+                            {{end}}
+                        {{end}}
                     </div>
                 </div>
             </div>

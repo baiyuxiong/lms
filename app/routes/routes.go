@@ -75,18 +75,6 @@ func (_ tStatic) ServeModule(
 }
 
 
-type tUpload struct {}
-var Upload tUpload
-
-
-func (_ tUpload) DoUploadFile(
-		) string {
-	args := make(map[string]string)
-	
-	return revel.MainRouter.Reverse("Upload.DoUploadFile", args).Url
-}
-
-
 type tAdmin struct {}
 var Admin tAdmin
 
@@ -399,6 +387,18 @@ func (_ tAuth) DoLogin(
 	revel.Unbind(args, "username", username)
 	revel.Unbind(args, "password", password)
 	return revel.MainRouter.Reverse("Auth.DoLogin", args).Url
+}
+
+
+type tUpload struct {}
+var Upload tUpload
+
+
+func (_ tUpload) DoUploadFile(
+		) string {
+	args := make(map[string]string)
+	
+	return revel.MainRouter.Reverse("Upload.DoUploadFile", args).Url
 }
 
 
